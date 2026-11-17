@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>TMGO South Africa — Official Campaign Posters</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #06080b;
+      --text: #f5f7fa;
+      --muted: rgba(245, 247, 250, 0.76);
+      --subtle: rgba(245, 247, 250, 0.48);
+      --sa-green: #007a3d;
+      --sa-gold: #ffb612;
+      --sa-red: #de3831;
+      --border: rgba(255, 255, 255, 0.13);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      scroll-snap-type: y proximity;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: var(--bg);
+      overflow-x: hidden;
+    }
+
+    /* Ambient South African Flag Inspired Studio Backdrop */
+    .studio-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 78% 24%, rgba(0, 122, 61, 0.16), transparent 46%),
+        radial-gradient(circle at 18% 76%, rgba(255, 182, 18, 0.11), transparent 48%),
+        radial-gradient(circle at 50% 50%, rgba(222, 56, 49, 0.06), transparent 60%),
+        linear-gradient(180deg, #080b10 0%, #050609 100%);
+    }
+
+    /* Fixed Three.js Canvas */
+    #poster-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Mobile bottom readability gradient */
+    .mobile-readability-scrim {
+      display: none;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 48vh;
+      z-index: 2;
+      pointer-events: none;
+      background: linear-gradient(
+        to top,
+        rgba(6, 8, 11, 0.98) 0%,
+        rgba(6, 8, 11, 0.86) 56%,
+        rgba(6, 8, 11, 0) 100%
+      );
+    }
+
+    /* Top Scroll Progress Line in TMGO Flag Gradient */
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      width: 0%;
+      z-index: 30;
+      pointer-events: none;
+      background: linear-gradient(90deg, var(--sa-green), var(--sa-gold), var(--sa-red));
+      transition: width 0.06s linear;
+    }
+
+    /* Minimal Brand Header */
+    .top-brand-bar {
+      position: fixed;
+      top: max(14px, env(safe-area-inset-top));
+      left: clamp(18px, 4vw, 48px);
+      z-index: 20;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-mark {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 0.92rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+
+    .brand-tag {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #06080b;
+      background: var(--sa-gold);
+      padding: 3px 9px;
+      border-radius: 999px;
+    }
+
+    /* Section Jump Navigator (Desktop Right Rail / Mobile Top Pill) */
+    .section-nav {
+      position: fixed;
+      right: clamp(16px, 2.5vw, 34px);
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 25;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 12px;
+    }
+
+    .nav-label-hint {
+      font-size: 0.64rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--subtle);
+      margin-bottom: 2px;
+    }
+
+    .nav-jump {
+      appearance: none;
+      background: transparent;
+      border: none;
+      color: var(--subtle);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      transition: color 0.25s ease;
+    }
+
+    .nav-jump:hover {
+      color: var(--text);
+    }
+
+    .nav-jump-text {
+      opacity: 0.6;
+      transition: opacity 0.25s ease;
+      text-align: right;
+    }
+
+    .nav-jump:hover .nav-jump-text,
+    .nav-jump.active .nav-jump-text {
+      opacity: 1;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .nav-jump-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
+      background: transparent;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .nav-jump.active .nav-jump-dot {
+      background: var(--sa-gold);
+      border-color: var(--sa-gold);
+      transform: scale(1.35);
+      box-shadow: 0 0 12px rgba(255, 182, 18, 0.55);
+    }
+
+    .nav-jump-num {
+      display: none;
+    }
+
+    /* Main Scroll Sections */
+    .posters-flow {
+      position: relative;
+      z-index: 5;
+    }
+
+    .poster-section {
+      min-height: 112vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      padding: 80px clamp(24px, 6.5vw, 96px);
+      scroll-snap-align: center;
+      position: relative;
+    }
+
+    .poster-section.align-left {
+      justify-content: flex-start;
+    }
+
+    .poster-section.align-right {
+      justify-content: flex-end;
+    }
+
+    /* Editorial Title & Description Block */
+    .poster-info {
+      max-width: 410px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .poster-info.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .poster-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--sa-gold);
+      margin-bottom: 12px;
+    }
+
+    .poster-kicker::before {
+      content: "";
+      width: 18px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--sa-green), var(--sa-gold), var(--sa-red));
+      border-radius: 2px;
+    }
+
+    .poster-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.75rem, 3.2vw, 2.75rem);
+      line-height: 1.12;
+      margin-bottom: 14px;
+      color: var(--text);
+    }
+
+    .poster-desc {
+      font-size: clamp(0.9rem, 1.08vw, 1rem);
+      line-height: 1.65;
+      font-weight: 300;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .poster-highlights {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 22px;
+    }
+
+    .poster-highlights li {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      padding: 5px 10px;
+      border-radius: 999px;
+    }
+
+    /* Section Scroll Prompt */
+    .section-scroll-cue {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.74rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--sa-gold);
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 6px 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .section-scroll-cue:hover {
+      opacity: 0.8;
+    }
+
+    .cue-arrow {
+      display: inline-block;
+      animation: bobArrow 1.8s ease-in-out infinite;
+    }
+
+    @keyframes bobArrow {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(4px); }
+    }
+
+    /* Floating Bottom Scroll Prompt on Initial Entry */
+    .bottom-scroll-prompt {
+      position: fixed;
+      bottom: max(18px, env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(10, 12, 18, 0.82);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      padding: 9px 18px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: opacity 0.45s ease, transform 0.45s ease;
+      white-space: nowrap;
+    }
+
+    .bottom-scroll-prompt.hidden {
+      opacity: 0;
+      transform: translateX(-50%) translateY(10px);
+    }
+
+    /* Graceful Fallback if WebGL Unavailable */
+    #fallback-list {
+      display: none;
+      position: relative;
+      z-index: 6;
+      flex-direction: column;
+      gap: 56px;
+      padding: 88px 20px;
+      max-width: 1020px;
+      margin: 0 auto;
+    }
+
+    #fallback-list.active {
+      display: flex;
+    }
+
+    .fallback-item {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .fallback-item img {
+      width: 100%;
+      max-height: 76vh;
+      object-fit: contain;
+      border-radius: 10px;
+    }
+
+    /* Mobile & Tablet Responsive Layout */
+    @media (max-width: 860px) {
+      .mobile-readability-scrim {
+        display: block;
+      }
+
+      .top-brand-bar {
+        display: none;
+      }
+
+      /* Top-centered compact jump bar on mobile */
+      .section-nav {
+        top: max(10px, env(safe-area-inset-top));
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%);
+        flex-direction: row;
+        align-items: center;
+        gap: 4px;
+        background: rgba(10, 12, 18, 0.82);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid var(--border);
+        padding: 5px 8px;
+        border-radius: 999px;
+      }
+
+      .nav-label-hint,
+      .nav-jump-text {
+        display: none;
+      }
+
+      .nav-jump {
+        padding: 5px 10px;
+        border-radius: 999px;
+        gap: 5px;
+      }
+
+      .nav-jump.active {
+        background: rgba(255, 182, 18, 0.16);
+      }
+
+      .nav-jump-num {
+        display: inline;
+        font-size: 0.72rem;
+        font-weight: 600;
+      }
+
+      .poster-section {
+        min-height: 110vh;
+        align-items: flex-end !important;
+        justify-content: center !important;
+        text-align: center;
+        padding: 64px 18px max(26px, env(safe-area-inset-bottom) + 16px);
+      }
+
+      .poster-info {
+        max-width: 520px;
+      }
+
+      .poster-kicker {
+        justify-content: center;
+        margin-bottom: 8px;
+      }
+
+      .poster-title {
+        font-size: clamp(1.4rem, 5.4vw, 1.9rem);
+        margin-bottom: 8px;
+      }
+
+      .poster-desc {
+        font-size: 0.84rem;
+        line-height: 1.5;
+        margin-bottom: 12px;
+      }
+
+      .poster-highlights {
+        justify-content: center;
+        margin-bottom: 12px;
+      }
+
+      .poster-highlights li {
+        font-size: 0.68rem;
+        padding: 4px 9px;
+      }
+
+      .bottom-scroll-prompt {
+        display: none;
+      }
+
+      .fallback-item {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="studio-backdrop"></div>
+  <div class="scroll-progress" id="scroll-progress"></div>
+
+  <header class="top-brand-bar">
+    <span class="brand-mark">TMGO South Africa</span>
+    <span class="brand-tag">Launch 31 May 2027</span>
+  </header>
+
+  <canvas id="poster-canvas"></canvas>
+  <div class="mobile-readability-scrim"></div>
+
+  <!-- Section Jump Navigation (Desktop right rail / Mobile top pill strip) -->
+  <nav class="section-nav" id="section-nav" aria-label="Jump to poster section">
+    <div class="nav-label-hint">Jump to Section</div>
+    <button class="nav-jump active" data-target="poster-0">
+      <span class="nav-jump-text">01 · Legal Courier</span>
+      <span class="nav-jump-num">01</span>
+      <span class="nav-jump-dot"></span>
+    </button>
+    <button class="nav-jump" data-target="poster-1">
+      <span class="nav-jump-text">02 · Trailers &amp; Roadside</span>
+      <span class="nav-jump-num">02</span>
+      <span class="nav-jump-dot"></span>
+    </button>
+    <button class="nav-jump" data-target="poster-2">
+      <span class="nav-jump-text">03 · Mobility &amp; Delivery</span>
+      <span class="nav-jump-num">03</span>
+      <span class="nav-jump-dot"></span>
+    </button>
+    <button class="nav-jump" data-target="poster-3">
+      <span class="nav-jump-text">04 · Launch Free Rides</span>
+      <span class="nav-jump-num">04</span>
+      <span class="nav-jump-dot"></span>
+    </button>
+  </nav>
+
+  <!-- Initial Scroll Prompt -->
+  <div class="bottom-scroll-prompt" id="bottom-scroll-prompt">
+    <span>Scroll down or jump to any section on the right ↓</span>
+  </div>
+
+  <!-- Scroll Sections Matching Each Poster's Real Content -->
+  <main class="posters-flow" id="posters-flow">
+    <!-- Poster 1 -->
+    <section class="poster-section align-left" id="poster-0" data-index="0">
+      <article class="poster-info visible">
+        <div class="poster-kicker">Poster 01 / 04 • Legal Logistics</div>
+        <h1 class="poster-title">TMGO Legal Document Courier</h1>
+        <p class="poster-desc">
+          Dedicated legal courier transport across South Africa—providing dependable
+          document collection directly from attorneys' offices and timely delivery straight to courts.
+        </p>
+        <ul class="poster-highlights">
+          <li>Attorney Collection</li>
+          <li>Court Delivery</li>
+          <li>info@sbdconsultants.co.za</li>
+        </ul>
+        <button class="section-scroll-cue" data-jump="poster-1">
+          <span>Scroll to Trailers &amp; Roadside</span>
+          <span class="cue-arrow">↓</span>
+        </button>
+      </article>
+    </section>
+
+    <!-- Poster 2 -->
+    <section class="poster-section align-right" id="poster-1" data-index="1">
+      <article class="poster-info">
+        <div class="poster-kicker">Poster 02 / 04 • Specialized Transport</div>
+        <h2 class="poster-title">More Ways to Move: Trailers &amp; Roadside</h2>
+        <p class="poster-desc">
+          Beyond ride-hailing and chauffeur trips, TM GO SA connects urban and rural
+          communities with tow trailers, cattle trailers, double-axle flatbed trailers,
+          and reliable roadside recovery assistance.
+        </p>
+        <ul class="poster-highlights">
+          <li>Tow &amp; Flatbed Trailers</li>
+          <li>Cattle Trailers</li>
+          <li>Roadside Assistance</li>
+          <li>App Live 31 May 2027</li>
+        </ul>
+        <button class="section-scroll-cue" data-jump="poster-2">
+          <span>Scroll to Complete Platform</span>
+          <span class="cue-arrow">↓</span>
+        </button>
+      </article>
+    </section>
+
+    <!-- Poster 3 (Swapped Image: tmgo4.jpeg) -->
+    <section class="poster-section align-left" id="poster-2" data-index="2">
+      <article class="poster-info">
+        <div class="poster-kicker">Poster 03 / 04 • All-In-One Platform</div>
+        <h2 class="poster-title">More Than a Ride: Mobility &amp; Delivery</h2>
+        <p class="poster-desc">
+          A complete nationwide platform linking people, businesses, and vehicle owners—covering
+          furniture moving, food delivery, parcels, rural clinic transport, and fresh produce
+          from markets. <em>"You go to work, your car goes to work too!"</em>
+        </p>
+        <ul class="poster-highlights">
+          <li>Furniture &amp; Food Delivery</li>
+          <li>Rural Clinic Transport</li>
+          <li>Fresh Produce Logistics</li>
+          <li>Owner Income</li>
+        </ul>
+        <button class="section-scroll-cue" data-jump="poster-3">
+          <span>Scroll to Launch Day Offer</span>
+          <span class="cue-arrow">↓</span>
+        </button>
+      </article>
+    </section>
+
+    <!-- Poster 4 (Swapped Image: tmgo3.jpeg) -->
+    <section class="poster-section align-right" id="poster-3" data-index="3">
+      <article class="poster-info">
+        <div class="poster-kicker">Poster 04 / 04 • 31 May 2027 Promotion</div>
+        <h2 class="poster-title">Big Launch Day: Free Rides Up to 60 KM</h2>
+        <p class="poster-desc">
+          Celebrating TM GO South Africa's official launch on <strong>31 May 2027</strong>.
+          Download, register, and activate the app to enjoy one free one-way ride up to 60 km
+          between <strong>06:00 AM and 09:00 AM</strong> to work, schools, hospitals, churches, or family visits.
+        </p>
+        <ul class="poster-highlights">
+          <li>31 May 2027 • 06:00–09:00</li>
+          <li>Up to 60 KM Free (One-Way)</li>
+          <li>Nationwide Launch</li>
+        </ul>
+        <button class="section-scroll-cue" data-jump="poster-0">
+          <span>Back to Top</span>
+          <span>↑</span>
+        </button>
+      </article>
+    </section>
+  </main>
+
+  <div id="fallback-list"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    (() => {
+      'use strict';
+
+      const POSTER_DATA = [
+        {
+          url: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjh43bFifEbIib0NQdtIJA3R0HPR4KCXAZ39OpwSbuVXvZC5lkB7gAZxIewZ5_sj_QPING0q1APABhdvhIUp3WV4wqwlHTocBZAv0U7iYmAAjJj7TU1FcGheWHiBCjf-I0YS6GVbhBfI-uF-JRRXHc-WDSTfKWbNQT-xVqrNX9eHLvNagWZ2XalEZNMF0w/s1600/tmgo1.jpeg",
+          title: "TMGO Legal Document Courier",
+          desc: "Dedicated legal courier transport across South Africa—collection from attorneys and delivery to courts. info@sbdconsultants.co.za"
+        },
+        {
+          url: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiY_ofY1pdMrQrjj7wpIbYcS3R7bm3iSLRcto9lnkvIo8Idj_fp1Lk8OAewGpf0604sqLsQqiKCCQPryVtwiwI8jbdH9hMx0ueCqAB2rVBgUspM2714DdaclbWGGBZ-RCuiO3Q0egdg4LM8MjldAeGXTr3gc2MpmlAjQGqUWYHpCCC5gmefnLL4MbABvnI/s1600/tmgo2.jpeg",
+          title: "More Ways to Move: Trailers & Roadside",
+          desc: "Tow trailers, cattle trailers, double-axle flatbed trailers, and roadside assistance connecting urban and rural communities. Available 31 May 2027."
+        },
+        {
+          url: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj_BdAz1afmnxFmf1NSoR7MJVRDXryjZk2qf79JDbVowdEzefqEyyHQfvksrqMG8Ayl0fn9ef-M1yrEW1axZg_f6ZMPUd0O09alS0h4WqDc3XYFwXjVq-JtYixHvO3BoZCWOU39W3dXPIkpjEh0h1mu_wsxPOGTQMvXkptnn0HED2aQ32Ec8UXf3fxnNnQ/s1536/tmgo4.jpeg",
+          title: "More Than a Ride: Mobility & Delivery",
+          desc: "Furniture delivery, food delivery, courier & parcel services, rural off-road transport, fresh produce & market delivery, and general cargo across SA."
+        },
+        {
+          url: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhfx8J_zkIua2rmVF1XzNqN5iY812EypzclvuROKeRyYzThcomX1zVf6aI80c5Rvw5VfQL2BDAJBDI7OOlQivf-J51uL1zXR3LASSN2Oww1J82D3GQsWCMFcse7UOCQ_YYrFmREIC76uohSj0B3zhdj4qJu6rdM7Cybh8SJweym2U-jtZHv9YcK0-mVpzk/s1536/tmgo3.jpeg",
+          title: "Big Launch Day: Free Rides Up to 60 KM",
+          desc: "Official launch on 31 May 2027 (06:00 AM – 09:00 AM only). Enjoy one free one-way ride up to 60 km when you register and activate the TM GO SA App."
+        }
+      ];
+
+      const canvas = document.getElementById('poster-canvas');
+      const progressBar = document.getElementById('scroll-progress');
+      const bottomPrompt = document.getElementById('bottom-scroll-prompt');
+      const sections = Array.from(document.querySelectorAll('.poster-section'));
+      const navButtons = Array.from(document.querySelectorAll('.nav-jump'));
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Smooth section jumping (nav dots + inline scroll cues)
+      document.querySelectorAll('[data-target], [data-jump]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const targetId = btn.dataset.target || btn.dataset.jump;
+          const el = document.getElementById(targetId);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+      });
+
+      // Reveal title & description smoothly as each section enters view
+      const infoObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const info = entry.target.querySelector('.poster-info');
+            if (info) info.classList.toggle('visible', entry.isIntersecting);
+          });
+        },
+        { threshold: 0.28 }
+      );
+      sections.forEach((sec) => infoObserver.observe(sec));
+
+      // Graceful HTML fallback if WebGL is unavailable or CORS blocks texture upload
+      function activateFallback() {
+        canvas.style.display = 'none';
+        document.getElementById('posters-flow').style.display = 'none';
+        document.querySelector('.mobile-readability-scrim').style.display = 'none';
+        const fallback = document.getElementById('fallback-list');
+        fallback.classList.add('active');
+        fallback.innerHTML = '';
+        POSTER_DATA.forEach((item, i) => {
+          const row = document.createElement('div');
+          row.className = 'fallback-item';
+          row.id = `poster-${i}`;
+          row.innerHTML = `
+            <img src="${item.url}" alt="${item.title}" />
+            <div class="poster-info visible">
+              <div class="poster-kicker">Poster 0${i + 1} / 04</div>
+              <h2 class="poster-title">${item.title}</h2>
+              <p class="poster-desc">${item.desc}</p>
+            </div>
+          `;
+          fallback.appendChild(row);
+        });
+      }
+
+      let renderer;
+      try {
+        renderer = new THREE.WebGLRenderer({
+          canvas,
+          antialias: true,
+          alpha: true,
+          powerPreference: 'high-performance'
+        });
+      } catch (e) {
+        activateFallback();
+        return;
+      }
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 100);
+      camera.position.set(0, 0, 8.6);
+
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      // -------------------------------------------------------------------
+      // Custom GLSL Poster Shaders (Crisp Reading + Cool 3D Scroll Motion)
+      // -------------------------------------------------------------------
+      const posterVertexShader = `
+        uniform float uTime;
+        uniform float uVelocity;
+        uniform float uTransition;
+        uniform float uMotionScale;
+        uniform float uSeed;
+
+        varying vec2 vUv;
+
+        void main() {
+          vUv = uv;
+          vec3 pos = position;
+
+          float curve = sin(uv.y * 3.14159265) * uVelocity * 0.42 * uMotionScale;
+          float wave = sin(uv.x * 3.14159265 + uTime * 2.0 + uSeed) * uTransition * 0.14 * uMotionScale;
+          pos.z += curve + wave;
+          pos.x += sin(uv.y * 3.14159265) * uVelocity * 0.05 * uMotionScale;
+
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+        }
+      `;
+
+      const posterFragmentShader = `
+        uniform sampler2D uTexture;
+        uniform float uHasTexture;
+        uniform float uOpacity;
+        uniform float uVelocity;
+        uniform float uPlaneAspect;
+        uniform float uSweep;
+        uniform float uFocus;
+
+        varying vec2 vUv;
+
+        float roundedMask(vec2 uv, float aspect, float radius) {
+          vec2 p = (uv - 0.5) * vec2(aspect, 1.0);
+          vec2 halfSize = vec2(aspect, 1.0) * 0.5;
+          vec2 d = abs(p) - (halfSize - vec2(radius));
+          float dist = length(max(d, 0.0)) + min(max(d.x, d.y), 0.0) - radius;
+          return 1.0 - smoothstep(-0.0035, 0.0035, dist);
+        }
+
+        void main() {
+          float mask = roundedMask(vUv, uPlaneAspect, 0.02);
+          if (mask < 0.01) discard;
+
+          vec3 col;
+          if (uHasTexture > 0.5) {
+            float shift = clamp(abs(uVelocity) * 0.007, 0.0, 0.011);
+            if (shift > 0.0004) {
+              float r = texture2D(uTexture, vUv + vec2(0.0, shift)).r;
+              float g = texture2D(uTexture, vUv).g;
+              float b = texture2D(uTexture, vUv - vec2(0.0, shift)).b;
+              col = vec3(r, g, b);
+            } else {
+              col = texture2D(uTexture, vUv).rgb;
+            }
+          } else {
+            col = mix(vec3(0.08, 0.09, 0.13), vec3(0.14, 0.15, 0.2), vUv.y);
+          }
+
+          float diag = (vUv.x * 0.65 + vUv.y * 0.55) - uSweep;
+          float sheen = exp(-diag * diag * 18.0) * 0.11 * uFocus;
+          col += vec3(1.0, 0.85, 0.48) * sheen;
+
+          vec2 borderUv = (vUv - 0.5) * vec2(uPlaneAspect, 1.0);
+          vec2 halfSize = vec2(uPlaneAspect, 1.0) * 0.5;
+          vec2 d = abs(borderUv) - (halfSize - vec2(0.02));
+          float sdf = length(max(d, 0.0)) + min(max(d.x, d.y), 0.0) - 0.02;
+          float rim = smoothstep(-0.009, -0.001, sdf) * mask;
+          col = mix(col, vec3(1.0, 0.72, 0.08), rim * (0.12 + 0.22 * uFocus));
+
+          gl_FragColor = vec4(col, uOpacity * mask);
+        }
+      `;
+
+      // Floating South African Gold & Green Bokeh Particles
+      const pCount = 135;
+      const pGeo = new THREE.BufferGeometry();
+      const pPos = new Float32Array(pCount * 3);
+      const pSize = new Float32Array(pCount);
+      const pDepth = new Float32Array(pCount);
+      const pColorMix = new Float32Array(pCount);
+
+      for (let i = 0; i < pCount; i++) {
+        pPos[i * 3] = (Math.random() - 0.5) * 18;
+        pPos[i * 3 + 1] = (Math.random() - 0.5) * 14;
+        pPos[i * 3 + 2] = (Math.random() - 0.5) * 8 - 1.5;
+        pSize[i] = 0.06 + Math.random() * 0.14;
+        pDepth[i] = 0.35 + Math.random() * 0.85;
+        pColorMix[i] = Math.random();
+      }
+
+      pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+      pGeo.setAttribute('aSize', new THREE.BufferAttribute(pSize, 1));
+      pGeo.setAttribute('aDepth', new THREE.BufferAttribute(pDepth, 1));
+      pGeo.setAttribute('aColorMix', new THREE.BufferAttribute(pColorMix, 1));
+
+      const pMat = new THREE.ShaderMaterial({
+        vertexShader: `
+          uniform float uTime;
+          uniform float uScroll;
+          attribute float aSize;
+          attribute float aDepth;
+          attribute float aColorMix;
+          varying float vAlpha;
+          varying float vColorMix;
+          void main() {
+            vec3 pos = position;
+            pos.y = mod(pos.y + uScroll * 2.2 * aDepth + uTime * 0.11 * aDepth + 7.0, 14.0) - 7.0;
+            pos.x += sin(uTime * 0.32 + position.y) * 0.22;
+            vec4 mv = modelViewMatrix * vec4(pos, 1.0);
+            gl_PointSize = aSize * (240.0 / -mv.z);
+            vAlpha = 0.16 + 0.28 * aDepth;
+            vColorMix = aColorMix;
+            gl_Position = projectionMatrix * mv;
+          }
+        `,
+        fragmentShader: `
+          varying float vAlpha;
+          varying float vColorMix;
+          void main() {
+            float d = length(gl_PointCoord - 0.5);
+            float soft = smoothstep(0.5, 0.06, d);
+            if (soft < 0.01) discard;
+            vec3 gold = vec3(1.0, 0.75, 0.15);
+            vec3 green = vec3(0.05, 0.58, 0.32);
+            vec3 col = mix(green, gold, vColorMix);
+            gl_FragColor = vec4(col, soft * vAlpha);
+          }
+        `,
+        uniforms: {
+          uTime: { value: 0 },
+          uScroll: { value: 0 }
+        },
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+      });
+      scene.add(new THREE.Points(pGeo, pMat));
+
+      // Build 4 Poster Meshes
+      const maxAnisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+      const posterGeo = new THREE.PlaneGeometry(1, 1, 36, 36);
+      const posters = [];
+
+      POSTER_DATA.forEach((item, index) => {
+        const uniforms = {
+          uTexture: { value: null },
+          uHasTexture: { value: 0 },
+          uTime: { value: 0 },
+          uVelocity: { value: 0 },
+          uTransition: { value: 0 },
+          uMotionScale: { value: reducedMotion ? 0 : 1 },
+          uSeed: { value: index * 2.1 },
+          uOpacity: { value: index === 0 ? 1 : 0 },
+          uPlaneAspect: { value: 0.8 },
+          uSweep: { value: 0.5 },
+          uFocus: { value: index === 0 ? 1 : 0 }
+        };
+
+        const mat = new THREE.ShaderMaterial({
+          vertexShader: posterVertexShader,
+          fragmentShader: posterFragmentShader,
+          uniforms,
+          transparent: true,
+          side: THREE.DoubleSide
+        });
+
+        const mesh = new THREE.Mesh(posterGeo, mat);
+        scene.add(mesh);
+
+        const posterObj = { index, mesh, uniforms, aspect: 0.8 };
+        posters.push(posterObj);
+
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => {
+          const tex = new THREE.Texture(img);
+          tex.minFilter = THREE.LinearMipmapLinearFilter;
+          tex.magFilter = THREE.LinearFilter;
+          tex.anisotropy = maxAnisotropy;
+          tex.generateMipmaps = true;
+          tex.needsUpdate = true;
+
+          const naturalAspect = img.naturalWidth / Math.max(1, img.naturalHeight);
+          posterObj.aspect = naturalAspect;
+          uniforms.uTexture.value = tex;
+          uniforms.uPlaneAspect.value = naturalAspect;
+          uniforms.uHasTexture.value = 1;
+        };
+        img.onerror = () => activateFallback();
+        img.src = item.url;
+      });
+
+      // -------------------------------------------------------------------
+      // Responsive Sizing & Scroll Tracking
+      // -------------------------------------------------------------------
+      function getWorldBounds() {
+        const vFov = THREE.MathUtils.degToRad(camera.fov);
+        const h = 2 * Math.tan(vFov / 2) * camera.position.z;
+        return { w: h * camera.aspect, h };
+      }
+
+      function fitPosterSize(aspect, world, isMobile) {
+        const maxW = world.w * (isMobile ? 0.90 : 0.49);
+        const maxH = world.h * (isMobile ? 0.45 : 0.78);
+        let h = maxH;
+        let w = h * aspect;
+        if (w > maxW) {
+          w = maxW;
+          h = w / aspect;
+        }
+        return { w, h };
+      }
+
+      let scrollTarget = 0;
+      let scrollCurrent = 0;
+      let scrollVelocity = 0;
+
+      function updateScrollState() {
+        const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        const norm = THREE.MathUtils.clamp(window.scrollY / maxScroll, 0, 1);
+        scrollTarget = norm * (posters.length - 1);
+        progressBar.style.width = `${(norm * 100).toFixed(2)}%`;
+
+        if (window.scrollY > 40) {
+          bottomPrompt.classList.add('hidden');
+        }
+
+        const activeIndex = Math.round(scrollTarget);
+        navButtons.forEach((btn, idx) => btn.classList.toggle('active', idx === activeIndex));
+      }
+
+      window.addEventListener('scroll', updateScrollState, { passive: true });
+      updateScrollState();
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        updateScrollState();
+      });
+
+      // -------------------------------------------------------------------
+      // Animation Render Loop
+      // -------------------------------------------------------------------
+      const clock = new THREE.Clock();
+
+      function animate() {
+        requestAnimationFrame(animate);
+        if (document.hidden) {
+          clock.getDelta();
+          return;
+        }
+
+        const dt = Math.min(clock.getDelta(), 0.05);
+        const elapsed = clock.getElapsedTime();
+
+        const prev = scrollCurrent;
+        scrollCurrent = THREE.MathUtils.lerp(scrollCurrent, scrollTarget, reducedMotion ? 0.25 : 0.095);
+        const instantVel = (scrollCurrent - prev) / Math.max(dt, 0.001);
+        scrollVelocity = THREE.MathUtils.lerp(scrollVelocity, instantVel, 0.14);
+
+        pMat.uniforms.uTime.value = elapsed;
+        pMat.uniforms.uScroll.value = scrollCurrent;
+
+        const isMobile = window.innerWidth <= 860;
+        const world = getWorldBounds();
+        const motionScale = reducedMotion ? 0 : 1;
+
+        posters.forEach((p, i) => {
+          const offset = i - scrollCurrent;
+          const absOffset = Math.abs(offset);
+
+          if (absOffset > 1.35) {
+            p.mesh.visible = false;
+            return;
+          }
+          p.mesh.visible = true;
+
+          const size = fitPosterSize(p.aspect, world, isMobile);
+          const settleEase = 1 - Math.pow(Math.max(0, 1 - absOffset), 2.5);
+
+          const desktopSideX = (i % 2 === 0 ? 1 : -1) * world.w * 0.19;
+          const restX = isMobile ? 0 : desktopSideX;
+          const restY = isMobile ? world.h * 0.17 : 0;
+
+          const x = restX + (isMobile ? 0 : Math.sin(offset * Math.PI * 0.5) * 0.45);
+          const y = restY - offset * world.h * 0.92 + Math.sin(elapsed * 0.9 + i) * 0.02 * (1 - Math.min(1, absOffset)) * motionScale;
+          const z = -Math.pow(absOffset, 1.35) * 3.1;
+          const rx = offset * 0.44 * motionScale;
+          const ry = (isMobile ? 0 : Math.sin(offset * 1.4) * -0.28) * motionScale;
+          const scale = 1.0 - Math.min(absOffset * 0.24, 0.36);
+
+          p.mesh.position.set(x, y, z);
+          p.mesh.rotation.set(rx, ry, 0);
+          p.mesh.scale.set(size.w * scale, size.h * scale, 1);
+
+          const opacity = THREE.MathUtils.clamp(1.15 - absOffset * 1.05, 0, 1);
+          const focus = THREE.MathUtils.clamp(1.0 - absOffset * 1.2, 0, 1);
+
+          const u = p.uniforms;
+          u.uTime.value = elapsed;
+          u.uVelocity.value = THREE.MathUtils.clamp(scrollVelocity * 0.22, -1.2, 1.2);
+          u.uTransition.value = settleEase;
+          u.uOpacity.value = opacity;
+          u.uFocus.value = focus;
+          u.uSweep.value = 0.55 - offset * 0.95;
+        });
+
+        renderer.render(scene, camera);
+      }
+
+      animate();
+    })();
+  </script>
+</body>
+</html>
